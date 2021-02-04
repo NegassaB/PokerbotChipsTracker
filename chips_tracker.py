@@ -1,0 +1,226 @@
+import logging
+import asyncio
+import json
+import time
+from datetime import (date, datetime, timedelta)
+import re
+
+from telethon import TelegramClient
+import configparser
+from telethon.errors import SessionPasswordNeededError
+from telethon.tl.functions.messages import GetHistoryRequest
+from telethon.tl.types import PeerChannel
+
+
+"""
+#hack
+The intention is as follows:
+    # done
+    can find when a giveaway is happening, can create a private table
+    # done
+    can send link to private table to channel
+    # done
+    can click call button in new private table
+"""
+
+# enable logging
+logging.basicConfig(
+    filename=f"log {__name__} chipstracker.log",
+    format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+# get logger
+logger = logging.getLogger(__name__)
+
+# get the argument for access from the .config file
+config = configparser.ConfigParser()
+config.read(".config.ini")
+
+
+# put each argument in its own variable
+api_id = config['Telegram']['api_id']
+api_hash = config['Telegram']['api_hash']
+phone = config['Telegram']['phone']
+
+# create the TelegramClient that will access ur telegram account using the above arguments
+client = TelegramClient(
+    "anon",
+    api_id,
+    api_hash
+)
+
+
+async def main():
+    await client.start()
+    logger.info("client started")
+    while 1:
+        try:
+            await channel_tracker(client)
+            time.sleep(300)
+            logger.info("looping")
+        except Exception as e:
+            logger.exception("e")
+            logger.info("Restarting script...")
+            channel_tracker(client)
+
+
+async def channel_tracker(telegram_client):
+    supercoolgroup_channel = await telegram_client.get_entity("https://t.me/joinchat/IlXl1EuELwoQ098Vgknn6A")
+    captain_supercoolgroup = await telegram_client.get_entity("@iGotTimee")
+    poker_bot = await telegram_client.get_entity("@PokerBot")
+    # logger.info(
+    #     (
+    #         f"got channel -- {supercoolgroup_channel.id}, got the captain -- {captain_supercoolgroup.id}, got poker_bot -- {poker_bot.id}"
+    #     )
+    # )
+
+    min_id = 49472
+    offset_time = datetime.now()
+
+    results = await telegram_client.get_messages(
+        entity=supercoolgroup_channel,
+        offset_date=offset_time,
+        limit=1,
+        min_id=min_id,
+        search="It's Giveaway Time",
+        from_user=captain_supercoolgroup,
+    )
+
+    if len(results) != 0:
+        logger.info("starting get_giveaway()")
+        await scpt2c(telegram_client, poker_bot, supercoolgroup_channel)
+
+        min_id = results[0].id
+        msg = results[0].message
+        logger.info(f"won the giveaway with id - {min_id} & message {msg}")
+    else:
+        logger.info("no new giveaway")
+
+
+async def scpt2c(tlg_client, bot, channel):
+    """
+    abbrv for send created private table to channel.
+    """
+
+    # create the table with all the necessary conditions
+    await create_table(tlg_client, bot)
+
+    # sending to the channel
+    # messages = await tlg_client.inline_query(
+    #     bot=bot,
+    #     query="table",
+    #     entity=channel
+    # )
+    # # click & send the private table to the channel
+    # prv_tbl_btn = messages[0]
+    # message = await prv_tbl_btn.click(channel, clear_draft=True)
+
+    await call_on_flop(tlg_client, bot)
+    # messages = await tlg_client.get_messages(bot)
+    # if re.findall("joined the table", messages.message):
+    #     await call_on_flop(tlg_client, bot)
+    # else:
+    #     pass
+
+    return
+
+
+async def create_table(telegram_client, poker_bot):
+    """
+    This is a function used to simplify the process of the creating the table.
+    """
+    # click leave button twice and leave any pre-existing table
+    await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+    time.sleep(0.3)
+    await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+
+    # click play button and start the process of creating a private table
+    await telegram_client.send_message(entity=poker_bot, message="‎🆕 Play")
+
+    time.sleep(0.3)
+    messages = await telegram_client.get_messages(poker_bot)
+    # search, click & create the private table first
+    crt_prv_tbl_btn = messages[0].buttons[2].pop()
+    await crt_prv_tbl_btn.click()
+    # await search_and_click("\u200e🔒\xa0Private table", messages)
+
+    messages = await telegram_client.get_messages(poker_bot)
+    # search and click the 50k button
+    # btn_50k = messages[0].buttons[0][2]
+    btn_50k = messages[0].buttons[0][0]
+    await btn_50k.click()
+    # await search_and_click("💵\xa0500", messages)
+
+    messages = await telegram_client.get_messages(poker_bot)
+    # search and click the No button
+    btn_no = messages[0].buttons[0][0]
+    await btn_no.click()
+    # await search_and_click("❌ No", messages)
+
+    messages = await telegram_client.get_messages(poker_bot)
+    # search and click the 5 players button
+    btn_plyrs_5 = messages[0].buttons[0][0]
+    await btn_plyrs_5.click()
+    # await search_and_click("5", messages)
+
+    messages = await telegram_client.get_messages(poker_bot)
+    # search and click the 30 secs button
+    # btn_30sec = messages[0].buttons[0][1]
+    btn_30sec = messages[0].buttons[1][1]
+    await btn_30sec.click()
+    # await search_and_click("30 seconds", messages)
+
+    logger.info("leaving create_table")
+
+
+async def call_on_flop(telegram_client, poker_bot):
+    """
+    This fun calls the first table.
+    """
+    # if messages contains something that describes that captain has accepted the table, then call_flop
+    # fix this, it should be able to detect when the captain gets into a table
+    messages = await telegram_client.get_messages(poker_bot)
+    if re.findall("joined table", messages[0].message, re.IGNORECASE):
+        # call the flop
+        time.sleep(2)
+        messages = await telegram_client.get_messages(poker_bot)
+        call_flop = messages[0].buttons[0][1]
+        await call_flop.click()
+        # wait for bot to raise & leave, check to see if you have won is present and then leave
+        time.sleep(3)
+        messages = await telegram_client.get_messages(bot, search="You have won")
+        if re.findall("you have won", messages[0].message):
+            await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+            await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+
+            return
+    else:
+        await call_on_flop(telegram_client, poker_bot)
+
+    # messages = await telegram_client.get_messages(poker_bot)
+    # for message in messages:
+    #     for button in message.buttons:
+    #         for btn in button:
+    #             if btn.text == "\u200e✅\xa025":
+    #                 await btn.click()
+    #     print(message)
+
+
+# async def search_and_click(str_to_search, messages):
+#     """
+#     This fun takes the string to search as well as the messages that was retrieved from the bot
+#     and searches for the str and clicks the button that contains it.
+#     """
+#     for message in messages:
+#         for button in message.buttons:
+#             for btn in button:
+#                 if btn.text == str_to_search:
+#                     await btn.click()
+#                     return
+
+
+with client:
+    client.loop.run_until_complete(main())
+    # client.loop.run_until_complete(channel_tracker())
+    # client.loop.run_forever()
