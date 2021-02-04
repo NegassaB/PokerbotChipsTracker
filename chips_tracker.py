@@ -10,6 +10,7 @@ import configparser
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import PeerChannel
+from telethon import errors
 
 
 # enable logging
@@ -48,12 +49,17 @@ async def main():
     while 1:
         try:
             await channel_tracker(client)
-            time.sleep(300)
+            time.sleep(200)
             logger.info("looping")
+        except errors.FloodWaitError as e:
+            logger.error(f"Gotta sleep for {e.seconds} seconds")
+            time.sleep(e.seconds)
+        except errors.FloodError as e:
+            logger.error(f"hit a flood error with message -- {e.message}")
         except Exception as e:
-            logger.exception("e")
+            logger.exception(f"hit exception -- {e}")
             logger.info("Restarting script...")
-            # channel_tracker(client)
+            channel_tracker(client)
 
 
 async def channel_tracker(telegram_client):
