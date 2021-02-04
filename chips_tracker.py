@@ -56,6 +56,7 @@ async def main():
             time.sleep(e.seconds)
         except errors.FloodError as e:
             logger.error(f"hit a flood error with message -- {e.message}")
+            time.sleep(5000)
         except Exception as e:
             logger.exception(f"hit exception -- {e}")
             logger.info("Restarting script...")
