@@ -12,17 +12,6 @@ from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import PeerChannel
 
 
-"""
-#hack
-The intention is as follows:
-    # done
-    can find when a giveaway is happening, can create a private table
-    # done
-    can send link to private table to channel
-    # done
-    can click call button in new private table
-"""
-
 # enable logging
 logging.basicConfig(
     filename=f"log {__name__} chipstracker.log",
@@ -50,6 +39,8 @@ client = TelegramClient(
     api_hash
 )
 
+min_id = 49472
+
 
 async def main():
     await client.start()
@@ -75,8 +66,8 @@ async def channel_tracker(telegram_client):
     #     )
     # )
 
-    min_id = 49472
     offset_time = datetime.now()
+    logger.info(f"min_id is {min_id}")
 
     results = await telegram_client.get_messages(
         entity=supercoolgroup_channel,
