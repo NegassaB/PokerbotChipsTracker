@@ -14,7 +14,7 @@ from telethon.tl.types import PeerChannel
 
 # enable logging
 logging.basicConfig(
-    filename=f"log {__name__} chipstracker.log",
+    # filename=f"log {__name__} chipstracker.log",
     format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
@@ -39,12 +39,12 @@ client = TelegramClient(
     api_hash
 )
 
-min_id = 49472
-
 
 async def main():
+    global min_id
     await client.start()
     logger.info("client started")
+    min_id = 49527
     while 1:
         try:
             await channel_tracker(client)
@@ -53,10 +53,11 @@ async def main():
         except Exception as e:
             logger.exception("e")
             logger.info("Restarting script...")
-            channel_tracker(client)
+            # channel_tracker(client)
 
 
 async def channel_tracker(telegram_client):
+    global min_id
     supercoolgroup_channel = await telegram_client.get_entity("https://t.me/joinchat/IlXl1EuELwoQ098Vgknn6A")
     captain_supercoolgroup = await telegram_client.get_entity("@iGotTimee")
     poker_bot = await telegram_client.get_entity("@PokerBot")
@@ -67,7 +68,6 @@ async def channel_tracker(telegram_client):
     # )
 
     offset_time = datetime.now()
-    logger.info(f"min_id is {min_id}")
 
     results = await telegram_client.get_messages(
         entity=supercoolgroup_channel,
@@ -98,21 +98,16 @@ async def scpt2c(tlg_client, bot, channel):
     await create_table(tlg_client, bot)
 
     # sending to the channel
-    # messages = await tlg_client.inline_query(
-    #     bot=bot,
-    #     query="table",
-    #     entity=channel
-    # )
-    # # click & send the private table to the channel
-    # prv_tbl_btn = messages[0]
-    # message = await prv_tbl_btn.click(channel, clear_draft=True)
+    messages = await tlg_client.inline_query(
+        bot=bot,
+        query="table",
+        entity=channel
+    )
+    # click & send the private table to the channel
+    prv_tbl_btn = messages[0]
+    message = await prv_tbl_btn.click(channel, clear_draft=True)
 
     await call_on_flop(tlg_client, bot)
-    # messages = await tlg_client.get_messages(bot)
-    # if re.findall("joined the table", messages.message):
-    #     await call_on_flop(tlg_client, bot)
-    # else:
-    #     pass
 
     return
 
@@ -138,8 +133,8 @@ async def create_table(telegram_client, poker_bot):
 
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 50k button
-    # btn_50k = messages[0].buttons[0][2]
-    btn_50k = messages[0].buttons[0][0]
+    btn_50k = messages[0].buttons[0][2]
+    # btn_50k = messages[0].buttons[0][0]
     await btn_50k.click()
     # await search_and_click("💵\xa0500", messages)
 
@@ -157,8 +152,8 @@ async def create_table(telegram_client, poker_bot):
 
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 30 secs button
-    # btn_30sec = messages[0].buttons[0][1]
-    btn_30sec = messages[0].buttons[1][1]
+    btn_30sec = messages[0].buttons[0][1]
+    # btn_30sec = messages[0].buttons[1][1]
     await btn_30sec.click()
     # await search_and_click("30 seconds", messages)
 
@@ -170,7 +165,6 @@ async def call_on_flop(telegram_client, poker_bot):
     This fun calls the first table.
     """
     # if messages contains something that describes that captain has accepted the table, then call_flop
-    # fix this, it should be able to detect when the captain gets into a table
     messages = await telegram_client.get_messages(poker_bot)
     if re.findall("joined table", messages[0].message, re.IGNORECASE):
         # call the flop
@@ -188,14 +182,6 @@ async def call_on_flop(telegram_client, poker_bot):
             return
     else:
         await call_on_flop(telegram_client, poker_bot)
-
-    # messages = await telegram_client.get_messages(poker_bot)
-    # for message in messages:
-    #     for button in message.buttons:
-    #         for btn in button:
-    #             if btn.text == "\u200e✅\xa025":
-    #                 await btn.click()
-    #     print(message)
 
 
 # async def search_and_click(str_to_search, messages):
