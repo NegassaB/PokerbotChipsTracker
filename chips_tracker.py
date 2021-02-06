@@ -180,6 +180,7 @@ async def call_on_flop(telegram_client, poker_bot):
         messages = await telegram_client.get_messages(poker_bot)
         call_flop = messages[0].buttons[0][1]
         await call_flop.click()
+        # await search_and_click("\u200e✅\xa250", messages)
         # wait for bot to raise & leave, check to see if you have won is present and then leave
         time.sleep(3)
         messages = await telegram_client.get_messages(bot, search="You have won")
