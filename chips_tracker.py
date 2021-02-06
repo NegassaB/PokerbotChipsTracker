@@ -173,7 +173,8 @@ async def call_on_flop(telegram_client, poker_bot):
     """
     # if messages contains something that describes that captain has accepted the table, then call_flop
     messages = await telegram_client.get_messages(poker_bot)
-    if re.findall("joined table", messages[0].message, re.IGNORECASE):
+    # if re.findall("joined table", messages[0].message, re.IGNORECASE):
+    if re.findall("New dealing started!", messages[0].message, re.IGNORECASE):
         # call the flop
         time.sleep(2)
         messages = await telegram_client.get_messages(poker_bot)
