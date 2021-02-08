@@ -43,16 +43,44 @@ client = TelegramClient(
 
 async def main():
     global min_id
-    await client.start()
-    logger.info("client started")
-    min_id = 49614
+
+    min_id = 50552
+
+    try:
+        await client.start()
+        logger.info("client started")
+        supercoolgroup_channel = await client.get_entity(
+            "https://t.me/joinchat/IlXl1EuELwoQ098Vgknn6A"
+        )
+        captain_supercoolgroup = await client.get_entity("@iGotTimee")
+        poker_bot = await client.get_entity("@PokerBot")
+        status_abt_cxn = (
+            f"got channel -- {supercoolgroup_channel.id}, got captain -- {captain_supercoolgroup.id}, got poker_bot -- {poker_bot.id}"
+            )
+        logger.info(status_abt_cxn)
+    except errors.FloodWaitError as e:
+        logger.error(f"Hit the flood-wait-error, Gotta sleep for {e.seconds} seconds")
+        time.sleep(e.seconds)
+    except errors.FloodError as e:
+        logger.error(f"hit a flood error with message -- {e.message}")
+        time.sleep(5000)
+    except Exception as e:
+        logger.exception(f"hit exception -- {e}")
+        logger.info("Restarting...")
+
     while 1:
         try:
-            await channel_tracker(client)
-            time.sleep(200)
+            await channel_tracker(
+                client,
+                supercoolgroup_channel,
+                captain_supercoolgroup,
+                poker_bot
+            )
+
+            time.sleep(600)
             logger.info("looping")
         except errors.FloodWaitError as e:
-            logger.error(f"Gotta sleep for {e.seconds} seconds")
+            logger.error(f"Hit the flood-wait-error, Gotta sleep for {e.seconds} seconds")
             time.sleep(e.seconds)
         except errors.FloodError as e:
             logger.error(f"hit a flood error with message -- {e.message}")
@@ -63,16 +91,8 @@ async def main():
             channel_tracker(client)
 
 
-async def channel_tracker(telegram_client):
+async def channel_tracker(telegram_client, supercoolgroup_channel, captain_supercoolgroup, poker_bot):
     global min_id
-    supercoolgroup_channel = await telegram_client.get_entity("https://t.me/joinchat/IlXl1EuELwoQ098Vgknn6A")
-    captain_supercoolgroup = await telegram_client.get_entity("@iGotTimee")
-    poker_bot = await telegram_client.get_entity("@PokerBot")
-    # logger.info(
-    #     (
-    #         f"got channel -- {supercoolgroup_channel.id}, got the captain -- {captain_supercoolgroup.id}, got poker_bot -- {poker_bot.id}"
-    #     )
-    # )
 
     offset_time = datetime.now()
 
