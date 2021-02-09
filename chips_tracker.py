@@ -228,7 +228,7 @@ async def search_and_click(str_to_search, messages):
                     return
 
 
-with client:
+async with client:
     client.loop.run_until_complete(main())
     # client.loop.run_until_complete(channel_tracker())
     # client.loop.run_forever()
