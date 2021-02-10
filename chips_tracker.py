@@ -88,7 +88,7 @@ async def main():
         except Exception as e:
             logger.exception(f"hit exception -- {e}")
             logger.info("Restarting script...")
-            channel_tracker(client, supercoolgroup_channel, captain_supercoolgroup, poker_bot)
+            await channel_tracker(client, supercoolgroup_channel, captain_supercoolgroup, poker_bot)
 
 
 async def channel_tracker(telegram_client, supercoolgroup_channel, captain_supercoolgroup, poker_bot):
