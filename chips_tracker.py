@@ -15,7 +15,7 @@ from telethon import errors
 
 # enable logging
 logging.basicConfig(
-    filename=f"log {__name__} chipstracker.log",
+    # filename=f"log {__name__} chipstracker.log",
     format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
@@ -133,7 +133,7 @@ async def scpt2c(tlg_client, bot, channel):
     )
     # click & send the private table to the channel
     prv_tbl_btn = messages[0]
-    message = await prv_tbl_btn.click(channel, clear_draft=True)
+    messages = await prv_tbl_btn.click(channel, clear_draft=True)
 
     await call_on_flop(tlg_client, bot)
 
@@ -190,29 +190,33 @@ async def create_table(telegram_client, poker_bot):
 
 async def call_on_flop(telegram_client, poker_bot):
     """
-    This fun calls the first table.
+    This fun gets the messages and passes them onto the call() function to actually call the table.
     """
-    # if messages contains something that describes that captain has accepted the table, then call_flop
-    messages = await telegram_client.get_messages(poker_bot)
-    # if re.findall("joined table", messages[0].message, re.IGNORECASE):
-    if re.findall("New dealing started!", messages[0].message, re.IGNORECASE):
-        # call the flop
-        time.sleep(2)
+    for _ in range(5):
+        # if messages contains something that describes that captain has accepted the table, then call_flop
         messages = await telegram_client.get_messages(poker_bot)
-        call_flop = messages[0].buttons[0][1]
-        await call_flop.click()
-        # await search_and_click("\u200e✅\xa250", messages)
-        # wait for bot to raise & leave, check to see if you have won is present and then leave
-        time.sleep(3)
-        messages = await telegram_client.get_messages(bot, search="You have won")
-        if re.findall("you have won", messages[0].message):
-            await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-            await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+        # if re.findall("joined table", messages[0].message, re.IGNORECASE):
+        if re.findall("New dealing started!", messages[0].message, re.IGNORECASE):
+            # call the flop
+            time.sleep(2)
+            messages = await telegram_client.get_messages(poker_bot)
+            call_flop = messages[0].buttons[0][1]
+            await call_flop.click()
+            # await search_and_click("\u200e✅\xa250", messages)
+            # # wait for bot to raise & leave, check to see if you have won is present and then leave
+            time.sleep(3)
+            messages = await telegram_client.get_messages(bot, search="You have won")
+            if re.findall("you have won", messages[0].message):
+                await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+                await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
 
-            return
+                return
+        else:
+            logger.info("the captain has not accepted the table, sleeping for 20 sec and trying again")
+            time.sleep(20)
+            continue
     else:
-        time.sleep(20)
-        await call_on_flop(telegram_client, poker_bot)
+        logger.info("unable to get the giveaway, getting out of call_on_flop")
 
 
 async def search_and_click(str_to_search, messages):
