@@ -44,7 +44,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 51279
+    min_id = 51373
 
     try:
         await client.start()
@@ -112,7 +112,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
 
         min_id = results[0].id
         msg = results[0].message
-        logger.info(f"won the giveaway with id - {min_id} & message {msg}")
+        logger.info(f"won the giveaway with id - {min_id} & message {msg[0:35]}")
     else:
         logger.info("no new giveaway")
 
@@ -128,8 +128,7 @@ async def scpt2c(tlg_client, bot, channel):
     # sending to the channel
     messages = await tlg_client.inline_query(
         bot=bot,
-        query="table",
-        entity=channel
+        query="table"
     )
     # click & send the private table to the channel
     prv_tbl_btn = messages[0]
@@ -148,6 +147,7 @@ async def create_table(telegram_client, poker_bot):
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
     time.sleep(0.5)
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+    time.sleep(0.5)
 
     # click play button and start the process of creating a private table
     await telegram_client.send_message(entity=poker_bot, message="‎🆕 Play")
