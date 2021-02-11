@@ -15,7 +15,7 @@ from telethon import errors
 
 # enable logging
 logging.basicConfig(
-    filename=f"log {__name__} chipstracker.log",
+    # filename=f"log {__name__} chipstracker.log",
     format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
@@ -44,7 +44,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 51373
+    min_id = 51373  # 51522
 
     try:
         await client.start()
@@ -80,7 +80,9 @@ async def main():
             time.sleep(300)
             logger.info("looping")
         except errors.FloodWaitError as e:
-            logger.error(f"Hit the flood-wait-error, Gotta sleep for {e.seconds} seconds")
+            logger.error(
+                f"Hit the flood-wait-error, Gotta sleep for {e.seconds} secs"
+            )
             time.sleep(e.seconds)
         except errors.FloodError as e:
             logger.error(f"hit a flood error with message -- {e.message}")
@@ -88,7 +90,12 @@ async def main():
         except Exception as e:
             logger.exception(f"hit exception -- {e}")
             logger.info("Restarting script...")
-            await channel_tracker(client, supercoolgroup_channel, captain_supercoolgroup, poker_bot)
+            await channel_tracker(
+                client,
+                supercoolgroup_channel,
+                captain_supercoolgroup,
+                poker_bot
+            )
 
 
 async def channel_tracker(telegram_client, supercoolgroup_channel, captain_supercoolgroup, poker_bot):
@@ -108,11 +115,17 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
     if len(results) != 0:
         logger.info("starting get_giveaway()")
         logger.info(f"the current min_id is {min_id}")
-        await scpt2c(telegram_client, poker_bot, supercoolgroup_channel)
-
         min_id = results[0].id
         msg = results[0].message
-        logger.info(f"won the giveaway with id - {min_id} & message {msg[0:33]}")
+
+        if await scpt2c(telegram_client, poker_bot, supercoolgroup_channel):
+            logger.info(
+                f"won the giveaway with id - {min_id} & message {msg[0:31]}"
+            )
+        else:
+            logger.info(
+                f"COUNLDN'T WIN the giveaway with id - {min_id} & message {msg[0:31]}"
+            )
     else:
         logger.info("no new giveaway")
 
@@ -134,9 +147,10 @@ async def scpt2c(tlg_client, bot, channel):
     prv_tbl_btn = messages[0]
     messages = await prv_tbl_btn.click(channel, clear_draft=True)
 
-    await call_on_flop(tlg_client, bot)
-
-    return
+    if await call_on_flop(tlg_client, bot):
+        return True
+    else:
+        return False
 
 
 async def create_table(telegram_client, poker_bot):
@@ -210,13 +224,16 @@ async def call_on_flop(telegram_client, poker_bot):
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
 
-                return
+                return True
         else:
-            logger.info("the captain has not accepted the table, sleeping for 20 sec and trying again")
-            time.sleep(20)
+            logger.info("the captain has not accepted the table, sleeping for 10 sec and trying again")
+            time.sleep(10)
             continue
     else:
         logger.info("unable to get the giveaway, getting out of call_on_flop")
+        await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+        await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+        return False
 
 
 async def search_and_click(str_to_search, messages):
