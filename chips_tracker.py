@@ -232,6 +232,7 @@ async def call_on_flop(telegram_client, poker_bot):
     else:
         logger.info("unable to get the giveaway, getting out of call_on_flop")
         await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
+        time.sleep(0.5)
         await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
         return False
 
