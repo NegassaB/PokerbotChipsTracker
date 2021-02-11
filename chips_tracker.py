@@ -77,7 +77,7 @@ async def main():
                 poker_bot
             )
 
-            time.sleep(300)
+            time.sleep(420)
             logger.info("looping")
         except errors.FloodWaitError as e:
             logger.error(
