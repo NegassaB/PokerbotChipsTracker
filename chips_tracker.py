@@ -77,7 +77,7 @@ async def main():
                 poker_bot
             )
 
-            time.sleep(600)
+            time.sleep(300)
             logger.info("looping")
         except errors.FloodWaitError as e:
             logger.error(f"Hit the flood-wait-error, Gotta sleep for {e.seconds} seconds")
@@ -112,7 +112,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
 
         min_id = results[0].id
         msg = results[0].message
-        logger.info(f"won the giveaway with id - {min_id} & message {msg[0:35]}")
+        logger.info(f"won the giveaway with id - {min_id} & message {msg[0:33]}")
     else:
         logger.info("no new giveaway")
 
