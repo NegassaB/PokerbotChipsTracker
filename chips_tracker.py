@@ -15,7 +15,7 @@ from telethon import errors
 
 # enable logging
 logging.basicConfig(
-    # filename=f"log {__name__} chipstracker.log",
+    filename=f"log {__name__} chipstracker.log",
     format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
@@ -44,7 +44,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 51373  # 51522
+    min_id = 51522
 
     try:
         await client.start()
