@@ -159,9 +159,9 @@ async def create_table(telegram_client, poker_bot):
     """
     # click leave button twice and leave any pre-existing table
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.5)
+    time.sleep(0.3)
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.5)
+    time.sleep(0.3)
 
     # click play button and start the process of creating a private table
     await telegram_client.send_message(entity=poker_bot, message="‎🆕 Play")
