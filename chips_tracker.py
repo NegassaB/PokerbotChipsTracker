@@ -44,7 +44,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 51522
+    min_id = 51879
 
     try:
         await client.start()
