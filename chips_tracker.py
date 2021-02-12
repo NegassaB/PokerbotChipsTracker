@@ -166,7 +166,7 @@ async def create_table(telegram_client, poker_bot):
     # click play button and start the process of creating a private table
     await telegram_client.send_message(entity=poker_bot, message="‎🆕 Play")
 
-    time.sleep(0.5)
+    time.sleep(0.3)
     messages = await telegram_client.get_messages(poker_bot)
     # search, click & create the private table first
     # crt_prv_tbl_btn = messages[0].buttons[2].pop()
