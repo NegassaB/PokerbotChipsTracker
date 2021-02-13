@@ -78,7 +78,7 @@ async def main():
             )
 
             logger.info("looping")
-            time.sleep(300)
+            time.sleep(210)
         except errors.FloodWaitError as e:
             logger.error(
                 f"Hit the flood-wait-error, Gotta sleep for {e.seconds} secs"
@@ -241,17 +241,17 @@ async def call_on_flop(telegram_client, poker_bot):
         return False
 
 
-async def search_and_click(str_to_search, messages):
-    """
-    This fun takes the string to search as well as the messages that was retrieved from the bot
-    and searches for the str and clicks the button that contains it.
-    """
-    for message in messages:
-        for button in message.buttons:
-            for btn in button:
-                if btn.text == str_to_search:
-                    await btn.click()
-                    return
+# async def search_and_click(str_to_search, messages):
+#     """
+#     This fun takes the string to search as well as the messages that was retrieved from the bot
+#     and searches for the str and clicks the button that contains it.
+#     """
+#     for message in messages:
+#         for button in message.buttons:
+#             for btn in button:
+#                 if btn.text == str_to_search:
+#                     await btn.click()
+#                     return
 
 
 with client:
