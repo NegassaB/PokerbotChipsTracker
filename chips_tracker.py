@@ -169,39 +169,39 @@ async def create_table(telegram_client, poker_bot):
     time.sleep(0.3)
     messages = await telegram_client.get_messages(poker_bot)
     # search, click & create the private table first
-    # crt_prv_tbl_btn = messages[0].buttons[2].pop()
-    # await crt_prv_tbl_btn.click()
-    await search_and_click("\u200e🔒\xa0Private table", messages)
+    crt_prv_tbl_btn = messages[0].buttons[2].pop()
+    await crt_prv_tbl_btn.click()
+    # await search_and_click("\u200e🔒\xa0Private table", messages)
 
     time.sleep(0.3)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 50k button
-    # btn_50k = messages[0].buttons[0][2]
+    btn_50k = messages[0].buttons[0][2]
     # btn_50k = messages[0].buttons[0][0]
-    # await btn_50k.click()
-    await search_and_click("💵\xa0500", messages)
+    await btn_50k.click()
+    # await search_and_click("💵\xa0500", messages)
 
     time.sleep(0.1)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the No button
-    # btn_no = messages[0].buttons[0][0]
-    # await btn_no.click()
-    await search_and_click("❌ No", messages)
+    btn_no = messages[0].buttons[0][0]
+    await btn_no.click()
+    # await search_and_click("❌ No", messages)
 
     time.sleep(0.3)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 5 players button
-    # btn_plyrs_5 = messages[0].buttons[0][0]
-    # await btn_plyrs_5.click()
-    await search_and_click("5", messages)
+    btn_plyrs_5 = messages[0].buttons[0][0]
+    await btn_plyrs_5.click()
+    # await search_and_click("5", messages)
 
     time.sleep(0.3)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 30 secs button
     # btn_30sec = messages[0].buttons[0][1]
-    # btn_30sec = messages[0].buttons[1][1]
-    # await btn_30sec.click()
-    await search_and_click("30 seconds", messages)
+    btn_30sec = messages[0].buttons[1][1]
+    await btn_30sec.click()
+    # await search_and_click("30 seconds", messages)
 
     logger.info("leaving create_table")
 
