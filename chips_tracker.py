@@ -44,7 +44,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 51879
+    min_id = 52149
 
     try:
         await client.start()
@@ -78,7 +78,7 @@ async def main():
             )
 
             logger.info("looping")
-            time.sleep(210)
+            time.sleep(150)
         except errors.FloodWaitError as e:
             logger.error(
                 f"Hit the flood-wait-error, Gotta sleep for {e.seconds} secs"
