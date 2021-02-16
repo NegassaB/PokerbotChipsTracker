@@ -1,17 +1,15 @@
-import logging
 import asyncio
-import json
-import time
-from datetime import (date, datetime, timedelta)
-import re
-
-from telethon import TelegramClient
 import configparser
+import json
+import logging
+import re
+import time
+from datetime import datetime, timedelta, timezone
+
+from telethon import TelegramClient, errors
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import PeerChannel
-from telethon import errors
-
 
 # enable logging
 logging.basicConfig(
@@ -101,7 +99,7 @@ async def main():
 async def channel_tracker(telegram_client, supercoolgroup_channel, captain_supercoolgroup, poker_bot):
     global min_id
 
-    offset_time = datetime.now()
+    offset_time = datetime.now(timezone.utc)
 
     results = await telegram_client.get_messages(
         entity=supercoolgroup_channel,
@@ -112,7 +110,11 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
         from_user=captain_supercoolgroup,
     )
 
-    if len(results) != 0:
+    # the actual time delta b/n the post about the giveaway and when the bot found out
+    delta_actual = offset_time - results[0].date
+    print(delta_actual.total_seconds())
+    # condition to find out if there is a giveaway & if it is within 10 secs of checking
+    if len(results) != 0 and delta_actual.total_seconds() <= 10:
         logger.info("starting get_giveaway()")
         logger.info(f"the current min_id is {min_id}")
         min_id = results[0].id
