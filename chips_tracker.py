@@ -76,7 +76,7 @@ async def main():
             )
 
             logger.info("looping")
-            time.sleep(150)
+            time.sleep(100)
         except errors.FloodWaitError as e:
             logger.error(
                 f"Hit the flood-wait-error, Gotta sleep for {e.seconds} secs"
@@ -110,14 +110,13 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
         from_user=captain_supercoolgroup,
     )
 
+    min_id = results[0].id
     # the actual time delta b/n the post about the giveaway and when the bot found out
     delta_actual = offset_time - results[0].date
-    print(delta_actual.total_seconds())
     # condition to find out if there is a giveaway & if it is within 10 secs of checking
     if len(results) != 0 and delta_actual.total_seconds() <= 10:
         logger.info("starting get_giveaway()")
         logger.info(f"the current min_id is {min_id}")
-        min_id = results[0].id
         msg = results[0].message
 
         if await scpt2c(telegram_client, poker_bot, supercoolgroup_channel):
@@ -149,6 +148,7 @@ async def scpt2c(tlg_client, bot, channel):
     prv_tbl_btn = messages[0]
     messages = await prv_tbl_btn.click(channel, clear_draft=True)
 
+    time.sleep(1)
     if await call_on_flop(tlg_client, bot):
         return True
     else:
@@ -215,8 +215,8 @@ async def call_on_flop(telegram_client, poker_bot):
     for _ in range(5):
         # if messages contains something that describes that captain has accepted the table, then call_flop
         messages = await telegram_client.get_messages(poker_bot)
-        # if re.findall("joined table", messages[0].message, re.IGNORECASE):
-        if re.findall("New dealing started!", messages[0].message, re.IGNORECASE):
+        # todo inorder to hinder nefarious actors, find a way to check that only the captain joined and no one else
+        re.findall("New dealing started!", messages[1].message, re.IGNORECASE):
             # call the flop
             time.sleep(2)
             messages = await telegram_client.get_messages(poker_bot)
