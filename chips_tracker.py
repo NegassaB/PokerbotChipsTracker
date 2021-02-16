@@ -110,23 +110,27 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
         from_user=captain_supercoolgroup,
     )
 
-    min_id = results[0].id
-    # the actual time delta b/n the post about the giveaway and when the bot found out
-    delta_actual = offset_time - results[0].date
-    # condition to find out if there is a giveaway & if it is within 10 secs of checking
-    if len(results) != 0 and delta_actual.total_seconds() <= 10:
-        logger.info("starting get_giveaway()")
-        logger.info(f"the current min_id is {min_id}")
-        msg = results[0].message
+    # condition to find out if there is a giveaway
+    if len(results) != 0:
+        min_id = results[0].id
+        # the actual time delta b/n the post about the giveaway and when the bot found out
+        delta_actual = offset_time - results[0].date
+        # condition to find out if it is within 10 secs of checking
+        if delta_actual.total_seconds() <= 10:
+            logger.info("starting get_giveaway()")
+            logger.info(f"the current min_id is {min_id}")
+            msg = results[0].message
 
-        if await scpt2c(telegram_client, poker_bot, supercoolgroup_channel):
-            logger.info(
-                f"won the giveaway with id - {min_id} & message {msg[0:31]}"
-            )
+            if await scpt2c(telegram_client, poker_bot, supercoolgroup_channel):
+                logger.info(
+                    f"won the giveaway with id - {min_id} & message {msg[0:31]}"
+                )
+            else:
+                logger.info(
+                    f"COUNLDN'T WIN the giveaway with id - {min_id} & message {msg[0:31]}"
+                )
         else:
-            logger.info(
-                f"COUNLDN'T WIN the giveaway with id - {min_id} & message {msg[0:31]}"
-            )
+            logger.info(f"too late to get the giveaway with id - {min_id}")
     else:
         logger.info("no new giveaway")
 
