@@ -122,7 +122,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
         # the actual time delta b/n the post about the giveaway and when the bot found out
         delta_actual = offset_time - results[0].date
         # condition to find out if it is within 10 secs of checking
-        if delta_actual.total_seconds() <= 10:
+        if delta_actual.total_seconds() <= 20:
             logger.info("starting get_giveaway()")
             logger.info(f"the current min_id is {min_id}")
             msg = results[0].message
