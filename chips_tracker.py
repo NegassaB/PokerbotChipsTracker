@@ -13,7 +13,7 @@ from telethon.tl.types import PeerChannel
 
 # enable logging
 logging.basicConfig(
-    filename=f"log {__name__} chipstracker.log",
+    # filename=f"log {__name__} chipstracker.log",
     format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
@@ -42,7 +42,11 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 52149
+    min_id = 52411
+
+    async def recall_main():
+        logger.info("Restarting...")
+        await main()
 
     try:
         await client.start()
@@ -59,12 +63,14 @@ async def main():
     except errors.FloodWaitError as e:
         logger.error(f"Hit the flood-wait-error, Gotta sleep for {e.seconds} seconds")
         time.sleep(e.seconds)
+        await recall_main()
     except errors.FloodError as e:
         logger.error(f"hit a flood error with message -- {e.message}")
         time.sleep(5000)
+        await recall_main()
     except Exception as e:
         logger.exception(f"hit exception -- {e}")
-        logger.info("Restarting...")
+        await recall_main()
 
     while 1:
         try:
@@ -76,7 +82,7 @@ async def main():
             )
 
             logger.info("looping")
-            time.sleep(100)
+            time.sleep(60)
         except errors.FloodWaitError as e:
             logger.error(
                 f"Hit the flood-wait-error, Gotta sleep for {e.seconds} secs"
