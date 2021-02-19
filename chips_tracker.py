@@ -136,7 +136,9 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
                     f"COUNLDN'T WIN the giveaway with id - {min_id} & message {msg[0:31]}"
                 )
         else:
-            logger.info(f"too late to get the giveaway with id - {min_id}")
+            logger.info(
+                f"too late to get the giveaway with id - {min_id}, missed it by {delta_actual.total_seconds()} much"
+            )
     else:
         logger.info("no new giveaway")
 
