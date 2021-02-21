@@ -42,7 +42,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 52411
+    min_id = 52523
 
     async def recall_main():
         logger.info("Restarting...")
@@ -120,9 +120,10 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
             from_user=captain_supercoolgroup
     )
 
+    min_id = results[0].id
+
     # condition to find out if the giveaway has been missed
     if len(won_giveaway) == 0:
-        min_id = results[0].id
         logger.info(
             f"starting get_giveaway(), the current min_id is {min_id}"
             )
