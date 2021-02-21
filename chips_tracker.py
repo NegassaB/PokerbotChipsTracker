@@ -140,10 +140,11 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
             )
     else:
         offset_time = datetime.now(timezone.utc)
-        delta_actual = offset_time - results[0].date
-        logger.info(
-            f"no new giveaway or too late to get giveaway with id - {min_id}, missed it by {delta_actual.total_seconds()} much"
-        )
+        delta_actual = offset_time - won_giveaway[0].date
+        m = "no new giveaway or too late to get giveaway with id - "
+        s = f"{min_id}, it's already been won by {delta_actual.total_seconds()} much"
+        msg = str.join([m, s])
+        logger.info(msg)
 
 
 async def scpt2c(tlg_client, bot, channel):
