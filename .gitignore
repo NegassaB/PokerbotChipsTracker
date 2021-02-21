@@ -8,3 +8,4 @@ username.session
 username.session-journal
 log __main__ chipstracker.log
 traker.log
+__pycache__/
