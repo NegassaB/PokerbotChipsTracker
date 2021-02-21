@@ -120,7 +120,8 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
             from_user=captain_supercoolgroup
     )
 
-    min_id = results[0].id
+    if len(results) != 0:
+        min_id = results[0].id
 
     # condition to find out if the giveaway has been missed
     if len(won_giveaway) == 0:
