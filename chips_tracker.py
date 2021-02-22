@@ -42,7 +42,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 52523
+    min_id = 52554
 
     async def recall_main():
         logger.info("Restarting...")
@@ -113,18 +113,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
         from_user=captain_supercoolgroup,
     )
 
-    won_giveaway = await telegram_client.get_messages(
-            entity=supercoolgroup_channel,
-            limit=1,
-            search="Giveaway closed!",
-            from_user=captain_supercoolgroup
-    )
-
     if len(results) != 0:
-        min_id = results[0].id
-
-    # condition to find out if the giveaway has been missed
-    if len(won_giveaway) == 0:
         logger.info(
             f"starting get_giveaway(), the current min_id is {min_id}"
             )
@@ -139,12 +128,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
                 f"COUNLDN'T WIN the giveaway with id - {min_id} & message {msg[0:31]}"
             )
     else:
-        offset_time = datetime.now(timezone.utc)
-        delta_actual = offset_time - won_giveaway[0].date
-        m = "no new giveaway or too late to get giveaway with id - "
-        s = f"{min_id}, it's already been won by {delta_actual.total_seconds()} much"
-        msg = str().join([m, s])
-        logger.info(msg)
+        logger.info(f"No new giveaway, current min_id is {min_id}")
 
 
 async def scpt2c(tlg_client, bot, channel):
@@ -177,9 +161,9 @@ async def create_table(telegram_client, poker_bot):
     """
     # click leave button twice and leave any pre-existing table
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.3)
+    time.sleep(0.1)
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.3)
+    time.sleep(0.1)
 
     # click play button and start the process of creating a private table
     await telegram_client.send_message(entity=poker_bot, message="‎🆕 Play")
@@ -231,8 +215,7 @@ async def call_on_flop(telegram_client, poker_bot):
     for _ in range(5):
         # if messages contains something that describes that captain has accepted the table, then call_flop
         messages = await telegram_client.get_messages(poker_bot)
-        # todo inorder to hinder nefarious actors, find a way to check that only the captain joined and no one else
-        if re.findall("New dealing started!", messages[1].message, re.IGNORECASE):
+        if re.findall("𝕮𝖆𝖕𝖙𝖆𝖎𝖓", messages[0].message, re.IGNORECASE):
             # call the flop
             time.sleep(2)
             messages = await telegram_client.get_messages(poker_bot)
