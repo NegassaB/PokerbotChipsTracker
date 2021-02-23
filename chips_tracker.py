@@ -114,7 +114,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
     )
 
     if len(results) != 0:
-        min_id = result[0].id
+        min_id = results[0].id
         logger.info(
             f"starting get_giveaway(), the current min_id is {min_id}"
             )
