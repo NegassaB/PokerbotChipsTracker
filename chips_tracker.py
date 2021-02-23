@@ -114,10 +114,10 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
     )
 
     if len(results) != 0:
-        min_id = results[0].id
         logger.info(
-            f"starting get_giveaway(), the current min_id is {min_id}"
+            f"starting get_giveaway(), the current min_id is {min_id}, the giveaway min_id is {results[0].id}"
             )
+        min_id = results[0].id
         msg = results[0].message
 
         if await scpt2c(telegram_client, poker_bot, supercoolgroup_channel):
