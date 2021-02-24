@@ -42,7 +42,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 52589
+    min_id = 52733
 
     async def recall_main():
         logger.info("Restarting...")
@@ -202,7 +202,7 @@ async def create_table(telegram_client, poker_bot):
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 30 secs button
     # btn_30sec = messages[0].buttons[0][1]
-    btn_30sec = messages[0].buttons[1][1]
+    btn_30sec = messages[0].buttons[0][1]
     await btn_30sec.click()
     # await search_and_click("30 seconds", messages)
 
