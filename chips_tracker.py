@@ -162,7 +162,7 @@ async def create_table(telegram_client, poker_bot):
     """
     # click leave button twice and leave any pre-existing table
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.1)
+    time.sleep(0.3)
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
     time.sleep(0.3)
 
@@ -245,8 +245,9 @@ async def call_on_flop(telegram_client, poker_bot):
 
 # async def search_and_click(str_to_search, messages):
 #     """
-#     This fun takes the string to search as well as the messages that was retrieved from the bot
-#     and searches for the str and clicks the button that contains it.
+#     This fun takes the string to search as well as the messages that was
+#     retrieved from the bot and searches for the str and clicks the button
+#     that contains it.
 #     """
 #     for message in messages:
 #         for button in message.buttons:
