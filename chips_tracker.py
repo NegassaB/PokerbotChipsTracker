@@ -120,7 +120,7 @@ async def channel_tracker(telegram_client, supercoolgroup_channel, captain_super
         min_id = results[0].id
         msg = results[0].message
 
-        if await scpt2c(telegram_client,poker_bot, supercoolgroup_channel, captain_supercoolgroup):
+        if await scpt2c(telegram_client, poker_bot, supercoolgroup_channel, captain_supercoolgroup):
             logger.info(
                 f"won the giveaway with id - {min_id} & message {msg[0:31]}"
             )
@@ -149,7 +149,7 @@ async def scpt2c(tlg_client, bot, channel, captain_supercoolgroup):
     prv_tbl_btn = messages[0]
     messages = await prv_tbl_btn.click(channel, clear_draft=True)
 
-    time.sleep(5)
+    time.sleep(7)
     if await call_on_flop(tlg_client, bot, captain_supercoolgroup):
         return True
     else:
@@ -213,33 +213,28 @@ async def call_on_flop(telegram_client, poker_bot, captain_supercoolgroup):
     """
     This fun gets the messages and passes them onto the call() function to actually call the table.
     """
-    for _ in range(5):
+    for _ in range(10):
         # if messages contains something that describes that captain has accepted the table, then call_flop
-        messages = await telegram_client.get_messages(
-            entity=poker_bot,
-            search="‼️ IT IS YOUR TURN ‼️"
-        )
-        if len(messages) != 0:
+        messages = await telegram_client.get_messages(poker_bot)
+        if "IT IS YOUR TURN" in messages[0].message:
             logger.info(messages[0].message)
             # call the flop
-            time.sleep(2)
-            messages = await telegram_client.get_messages(poker_bot)
-            logger.info(messages[0].message)
+            time.sleep(1)
             call_flop = messages[0].buttons[0][1]
-            logger.info(f"about to press the call {call_flop}")
+            logger.info(f"about to press the call {call_flop.text}")
             await call_flop.click()
             # await search_and_click("\u200e✅\xa250", messages)
             # # wait for bot to raise & leave, check to see if you have won is present and then leave
             time.sleep(3)
-            messages = await telegram_client.get_messages(bot, search="You have won")
-            if re.findall("you have won", messages[0].message):
+            messages = await telegram_client.get_messages(poker_bot, search="You have won")
+            if "you have won" in messages[0].message:
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
 
                 return True
         else:
-            logger.info("the captain has not accepted the table, sleeping for 10 sec and trying again")
-            time.sleep(10)
+            logger.info("the captain has not accepted the table, sleeping for 5 sec and trying again")
+            time.sleep(5)
             continue
     else:
         logger.info("unable to get the giveaway, getting out of call_on_flop")
