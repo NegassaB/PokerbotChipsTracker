@@ -82,7 +82,7 @@ async def main():
             )
 
             logger.info("looping")
-            time.sleep(20)
+            time.sleep(10)
         except errors.FloodWaitError as e:
             logger.error(
                 f"Hit the flood-wait-error, Gotta sleep for {e.seconds} secs"
