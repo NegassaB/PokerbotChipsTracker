@@ -225,9 +225,9 @@ async def call_on_flop(telegram_client, poker_bot, captain_supercoolgroup):
             await call_flop.click()
             # await search_and_click("\u200e✅\xa250", messages)
             # # wait for bot to raise & leave, check to see if you have won is present and then leave
-            time.sleep(3)
+            time.sleep(15)
             messages = await telegram_client.get_messages(poker_bot, search="You have won")
-            if "you have won" in messages[0].message:
+            if "Players 1/5" in messages[0].message:
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
 
