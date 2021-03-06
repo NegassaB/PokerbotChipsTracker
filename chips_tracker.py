@@ -162,21 +162,21 @@ async def create_table(telegram_client, poker_bot):
     """
     # click leave button twice and leave any pre-existing table
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.3)
+    time.sleep(0.5)
     await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
-    time.sleep(0.3)
+    time.sleep(0.5)
 
     # click play button and start the process of creating a private table
     await telegram_client.send_message(entity=poker_bot, message="‎🆕 Play")
 
-    time.sleep(0.3)
+    time.sleep(0.5)
     messages = await telegram_client.get_messages(poker_bot)
     # search, click & create the private table first
     crt_prv_tbl_btn = messages[0].buttons[2].pop()
     await crt_prv_tbl_btn.click()
     # await search_and_click("\u200e🔒\xa0Private table", messages)
 
-    time.sleep(0.3)
+    time.sleep(0.5)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 50k button
     btn_50k = messages[0].buttons[0][2]
@@ -191,14 +191,14 @@ async def create_table(telegram_client, poker_bot):
     await btn_no.click()
     # await search_and_click("❌ No", messages)
 
-    time.sleep(0.3)
+    time.sleep(0.5)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 5 players button
     btn_plyrs_5 = messages[0].buttons[0][0]
     await btn_plyrs_5.click()
     # await search_and_click("5", messages)
 
-    time.sleep(0.3)
+    time.sleep(0.5)
     messages = await telegram_client.get_messages(poker_bot)
     # search and click the 30 secs button
     # btn_30sec = messages[0].buttons[0][1]
@@ -225,9 +225,9 @@ async def call_on_flop(telegram_client, poker_bot, captain_supercoolgroup):
             await call_flop.click()
             # await search_and_click("\u200e✅\xa250", messages)
             # # wait for bot to raise & leave, check to see if you have won is present and then leave
-            time.sleep(15)
+            time.sleep(20)
             messages = await telegram_client.get_messages(poker_bot, search="You have won")
-            if "Players 1/5" in messages[0].message:
+            if "👥 Players 1/5" in messages[0].message:
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
                 await telegram_client.send_message(entity=poker_bot, message="🏃 Leave")
 
