@@ -42,7 +42,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 53072
+    min_id = 64838
 
     async def recall_main():
         logger.info("Restarting...")
