@@ -213,7 +213,7 @@ async def call_on_flop(telegram_client, poker_bot, captain_supercoolgroup):
     """
     This fun gets the messages and passes them onto the call() function to actually call the table.
     """
-    for _ in range(10):
+    for _ in range(4):
         # if messages contains something that describes that captain has accepted the table, then call_flop
         messages = await telegram_client.get_messages(poker_bot)
         if "IT IS YOUR TURN" in messages[0].message:
