@@ -13,7 +13,7 @@ from telethon.tl.types import PeerChannel
 
 # enable logging
 logging.basicConfig(
-    # filename=f"log {__name__} chipstracker.log",
+    filename=f"log {__name__} chipstracker.log",
     format='%(asctime)s - %(funcName)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
@@ -42,7 +42,7 @@ client = TelegramClient(
 async def main():
     global min_id
 
-    min_id = 64838
+    min_id = 69605
 
     async def recall_main():
         logger.info("Restarting...")
