@@ -51,11 +51,11 @@ async def main():
     try:
         await client.start()
         logger.info("client started")
-        supercoolgroup_channel = await client.get_entity(
+        supercoolgroup_channel = await client.get_input_entity(
             "https://t.me/joinchat/IlXl1EuELwoQ098Vgknn6A"
         )
-        captain_supercoolgroup = await client.get_entity("@iGotTimee")
-        poker_bot = await client.get_entity("@PokerBot")
+        captain_supercoolgroup = await client.get_input_entity("@iGotTimee")
+        poker_bot = await client.get_input_entity("@PokerBot")
         status_abt_cxn = (
             f"got channel -- {supercoolgroup_channel.id}, got captain -- {captain_supercoolgroup.id}, got poker_bot -- {poker_bot.id}"
             )
