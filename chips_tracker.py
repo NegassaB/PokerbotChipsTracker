@@ -57,7 +57,7 @@ async def main():
         captain_supercoolgroup = await client.get_input_entity("@iGotTimee")
         poker_bot = await client.get_input_entity("@PokerBot")
         status_abt_cxn = (
-            f"got channel -- {supercoolgroup_channel.id}, got captain -- {captain_supercoolgroup.id}, got poker_bot -- {poker_bot.id}"
+            f"got channel -- {supercoolgroup_channel.channel_id}, got captain -- {captain_supercoolgroup.user_id}, got poker_bot -- {poker_bot.user_id}"
             )
         logger.info(status_abt_cxn)
     except errors.FloodWaitError as e:
